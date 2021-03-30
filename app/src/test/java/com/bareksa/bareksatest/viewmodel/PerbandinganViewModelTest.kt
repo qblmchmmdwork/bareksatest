@@ -37,9 +37,6 @@ class PerbandinganViewModelTest {
         sut = PerbandinganViewModel(
             coroutineDispatcherProvider,
             reksaDanaRepositoryMock,
-            reksaDanaDummies[0].id,
-            reksaDanaDummies[1].id,
-            reksaDanaDummies[2].id,
         )
         observerMock = mockk(relaxed = true)
         sut.state.observeForever(observerMock)
@@ -54,7 +51,11 @@ class PerbandinganViewModelTest {
         coEvery { reksaDanaRepositoryMock.getById(reksaDanaDummies[2].id) } returns
                 RepositoryResource.Success(reksaDanaDummies[2])
 
-        sut.load()
+        sut.load(listOf(
+            reksaDanaDummies[0].id,
+            reksaDanaDummies[1].id,
+            reksaDanaDummies[2].id,
+        ))
 
         coVerify(ordering = Ordering.ORDERED) {
             reksaDanaRepositoryMock.getById(reksaDanaDummies[0].id)
@@ -68,7 +69,7 @@ class PerbandinganViewModelTest {
             observerMock.onChanged(
                 PerbandinganState(
                     loading = false, error = null, data =
-                    PerbandinganState.ReksaDanaComparisonGroup(
+                    listOf(
                         reksaDanaDummies[0],
                         reksaDanaDummies[1],
                         reksaDanaDummies[2]
@@ -87,7 +88,11 @@ class PerbandinganViewModelTest {
         coEvery { reksaDanaRepositoryMock.getById(reksaDanaDummies[2].id) } returns
                 RepositoryResource.Success(reksaDanaDummies[2])
 
-        sut.load()
+        sut.load(listOf(
+            reksaDanaDummies[0].id,
+            reksaDanaDummies[1].id,
+            reksaDanaDummies[2].id,
+        ))
 
         coVerify(ordering = Ordering.ORDERED) {
             reksaDanaRepositoryMock.getById(reksaDanaDummies[0].id)

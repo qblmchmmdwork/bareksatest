@@ -15,31 +15,21 @@ import kotlinx.coroutines.withContext
 class PerbandinganViewModel(
     private val dispatcher: CoroutineDispatcherProvider,
     private val reksaDanaRepository: ReksaDanaRepository,
-    private val reksaDanaId1: String,
-    private val reksaDanaId2: String,
-    private val reksaDanaId3: String,
 ) : ViewModel() {
     private val _state = MutableLiveData<PerbandinganState>().apply { value = PerbandinganState() }
     val state: LiveData<PerbandinganState> = _state
 
-    fun load() {
+    fun load(reksaDanaIds: List<String>) {
         if(_state.value?.loading == true) return
         _state.value = _state.value?.copy(loading = true, error = null)
         viewModelScope.launch {
             val result = withContext(dispatcher.io) {
-                val load1 = async { reksaDanaRepository.getById(reksaDanaId1) }
-                val load2 = async { reksaDanaRepository.getById(reksaDanaId2) }
-                val load3 = async { reksaDanaRepository.getById(reksaDanaId3) }
-                awaitAll(load1, load2, load3)
-
+                val loadAllAsync = reksaDanaIds.map { async { reksaDanaRepository.getById(it) } }.toTypedArray()
+                awaitAll(*loadAllAsync)
             }
             try {
                 val success = result.map { it as RepositoryResource.Success }
-                val data = PerbandinganState.ReksaDanaComparisonGroup(
-                    success[0].data,
-                    success[1].data,
-                    success[2].data,
-                )
+                val data = success.map { it.data }
                 _state.value = _state.value?.copy(loading = false, data = data)
             } catch (e: Exception) {
                 val failedResult =
