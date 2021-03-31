@@ -1,3 +1,8 @@
 package com.bareksa.bareksatest.model
 
-data class ImbalHasil(val nilai: Double, val perTahun: Int)
+import java.util.*
+
+data class ImbalHasil(
+    val value: Float,
+    val date: Date
+)
