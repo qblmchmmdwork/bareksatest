@@ -1,6 +1,5 @@
 package com.bareksa.bareksatest.model
 
-import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import java.util.*
 

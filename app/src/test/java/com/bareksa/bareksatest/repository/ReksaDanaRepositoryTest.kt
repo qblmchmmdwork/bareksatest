@@ -25,33 +25,33 @@ class ReksaDanaRepositoryTest {
 
     @Test
     fun `getById success, should return correct data`() {
-        coEvery { remoteDataSourceMock.getById(reksaDanaDummy.id) } returns RemoteResource.Success(reksaDanaDummy)
+        coEvery { remoteDataSourceMock.getReksaDanaById(reksaDanaDummy.id) } returns RemoteResource.Success(reksaDanaDummy)
 
         val res = runBlocking { sut.getById(reksaDanaDummy.id) } as RepositoryResource.Success
 
-        coVerify(exactly = 1) { remoteDataSourceMock.getById(reksaDanaDummy.id) }
+        coVerify(exactly = 1) { remoteDataSourceMock.getReksaDanaById(reksaDanaDummy.id) }
         assertEquals(reksaDanaDummy, res.data)
     }
 
     @Test
     fun `getById failed, should return correct data`() {
-        coEvery { remoteDataSourceMock.getById(reksaDanaDummy.id) } returns
+        coEvery { remoteDataSourceMock.getReksaDanaById(reksaDanaDummy.id) } returns
                 RemoteResource.Failed(401, "Unauthorized")
 
         val res = runBlocking { sut.getById(reksaDanaDummy.id) } as RepositoryResource.Error
 
-        coVerify(exactly = 1) { remoteDataSourceMock.getById(reksaDanaDummy.id) }
+        coVerify(exactly = 1) { remoteDataSourceMock.getReksaDanaById(reksaDanaDummy.id) }
         assertEquals("Unauthorized", res.message)
     }
 
     @Test
     fun `getById error, should return correct data`() {
-        coEvery { remoteDataSourceMock.getById(reksaDanaDummy.id) } returns
+        coEvery { remoteDataSourceMock.getReksaDanaById(reksaDanaDummy.id) } returns
                 RemoteResource.Error("Timeout", SocketTimeoutException())
 
         val res = runBlocking { sut.getById(reksaDanaDummy.id) } as RepositoryResource.Error
 
-        coVerify(exactly = 1) { remoteDataSourceMock.getById(reksaDanaDummy.id) }
+        coVerify(exactly = 1) { remoteDataSourceMock.getReksaDanaById(reksaDanaDummy.id) }
         assertEquals("Timeout", res.message)
     }
 }

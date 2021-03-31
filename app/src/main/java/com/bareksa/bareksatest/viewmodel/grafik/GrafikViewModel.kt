@@ -7,11 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.bareksa.bareksatest.repository.RepositoryResource
 import com.bareksa.bareksatest.ui.grafik.GrafikDataProvider
 import com.bareksa.bareksatest.util.CoroutineDispatcherProvider
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class GrafikViewModel(
-    private val id : String,
+    private val ids : List<String>,
     private val dispatcher: CoroutineDispatcherProvider,
     private val dataProvider: GrafikDataProvider
 ): ViewModel() {
@@ -21,10 +20,19 @@ class GrafikViewModel(
     fun load() {
         _state.value = _state.value?.copy(loading = true, error = null)
         viewModelScope.launch {
-            when(val res =
-                withContext(dispatcher.io) { dataProvider.getGrafikDataSinceLastYear(id) }) {
-                is RepositoryResource.Error -> _state.value = _state.value?.copy(loading = false, error = res.message)
-                is RepositoryResource.Success -> _state.value = _state.value?.copy(loading = false, data = res.data)
+            val loadAllAsync = ids.map {
+                async { dataProvider.getGrafikDataSinceLastYear(it) }
+            }.toTypedArray()
+            val result = withContext(dispatcher.io) { awaitAll(*loadAllAsync)}
+            try {
+                val success = result.map { it as RepositoryResource.Success }
+                val data = success.map { it.data }
+                _state.value = _state.value?.copy(loading = false, data = ids.zip(data))
+            } catch (e: Exception) {
+                val failedResult =
+                    result.find { it is RepositoryResource.Error } as RepositoryResource.Error
+                _state.value = _state.value?.copy(loading = false, error = failedResult.message)
+                return@launch
             }
         }
     }

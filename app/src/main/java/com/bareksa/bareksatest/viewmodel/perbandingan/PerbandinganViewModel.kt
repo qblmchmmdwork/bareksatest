@@ -7,10 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.bareksa.bareksatest.repository.ReksaDanaRepository
 import com.bareksa.bareksatest.repository.RepositoryResource
 import com.bareksa.bareksatest.util.CoroutineDispatcherProvider
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class PerbandinganViewModel(
     private val dispatcher: CoroutineDispatcherProvider,
