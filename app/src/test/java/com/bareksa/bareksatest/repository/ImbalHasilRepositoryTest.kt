@@ -31,12 +31,12 @@ class ImbalHasilRepositoryTest {
         val dummy = List(3) {
             ImbalHasil(it.toFloat(), Date())
         }
-        coEvery { remoteDataSourceMock.getSince(1, TimeUnit.Year) } returns
+        coEvery { remoteDataSourceMock.getImbalHasilByIdSince("", 1, TimeUnit.Year) } returns
                 RemoteResource.Success(dummy)
 
-        val res = runBlocking { sut.getSinceLastYear() } as RepositoryResource.Success
+        val res = runBlocking { sut.getSinceLastYear("") } as RepositoryResource.Success
 
-        coVerify(exactly = 1) { remoteDataSourceMock.getSince(1, TimeUnit.Year) }
+        coVerify(exactly = 1) { remoteDataSourceMock.getImbalHasilByIdSince("", 1, TimeUnit.Year) }
         Assert.assertEquals(dummy, res.data)
     }
 
@@ -45,12 +45,12 @@ class ImbalHasilRepositoryTest {
         val dummy = List(3) {
             ImbalHasil(it.toFloat(), Date())
         }
-        coEvery { remoteDataSourceMock.getSince(1, TimeUnit.Year) } returns
+        coEvery { remoteDataSourceMock.getImbalHasilByIdSince("", 1, TimeUnit.Year) } returns
                 RemoteResource.Success(dummy)
 
-        val res = runBlocking { sut.getGrafikDataSinceLastYear() } as RepositoryResource.Success
+        val res = runBlocking { sut.getGrafikDataSinceLastYear("") } as RepositoryResource.Success
 
-        coVerify(exactly = 1) { remoteDataSourceMock.getSince(1, TimeUnit.Year) }
+        coVerify(exactly = 1) { remoteDataSourceMock.getImbalHasilByIdSince("", 1, TimeUnit.Year) }
         Assert.assertEquals(
             dummy.map { GrafikFragment.GrafikEntry(it.date, it.value) },
             res.data.map { GrafikFragment.GrafikEntry(it.date, it.value) })
@@ -58,34 +58,34 @@ class ImbalHasilRepositoryTest {
 
     @Test
     fun `getSinceLastYear failed, should return correct data`() {
-        coEvery { remoteDataSourceMock.getSince(1, TimeUnit.Year) } returns
+        coEvery { remoteDataSourceMock.getImbalHasilByIdSince("", 1, TimeUnit.Year) } returns
                 RemoteResource.Failed(401, "Unauthorized")
 
-        val res = runBlocking { sut.getSinceLastYear() } as RepositoryResource.Error
+        val res = runBlocking { sut.getSinceLastYear("") } as RepositoryResource.Error
 
-        coVerify(exactly = 1) { remoteDataSourceMock.getSince(1, TimeUnit.Year) }
+        coVerify(exactly = 1) { remoteDataSourceMock.getImbalHasilByIdSince("", 1, TimeUnit.Year) }
         Assert.assertEquals("Unauthorized", res.message)
     }
 
     @Test
     fun `getGrafikDataSinceLastYear failed, should return correct data`() {
-        coEvery { remoteDataSourceMock.getSince(1, TimeUnit.Year) } returns
+        coEvery { remoteDataSourceMock.getImbalHasilByIdSince("", 1, TimeUnit.Year) } returns
                 RemoteResource.Failed(401, "Unauthorized")
 
-        val res = runBlocking { sut.getGrafikDataSinceLastYear() } as RepositoryResource.Error
+        val res = runBlocking { sut.getGrafikDataSinceLastYear("") } as RepositoryResource.Error
 
-        coVerify(exactly = 1) { remoteDataSourceMock.getSince(1, TimeUnit.Year) }
+        coVerify(exactly = 1) { remoteDataSourceMock.getImbalHasilByIdSince("", 1, TimeUnit.Year) }
         Assert.assertEquals("Unauthorized", res.message)
     }
 
     @Test
     fun `getSinceLastYear error, should return correct data`() {
-        coEvery { remoteDataSourceMock.getSince(1, TimeUnit.Year) } returns
+        coEvery { remoteDataSourceMock.getImbalHasilByIdSince("", 1, TimeUnit.Year) } returns
                 RemoteResource.Error("Timeout", SocketTimeoutException())
 
-        val res = runBlocking { sut.getSinceLastYear() } as RepositoryResource.Error
+        val res = runBlocking { sut.getSinceLastYear("") } as RepositoryResource.Error
 
-        coVerify(exactly = 1) { remoteDataSourceMock.getSince(1, TimeUnit.Year) }
+        coVerify(exactly = 1) { remoteDataSourceMock.getImbalHasilByIdSince("", 1, TimeUnit.Year) }
         Assert.assertEquals("Timeout", res.message)
     }
 }

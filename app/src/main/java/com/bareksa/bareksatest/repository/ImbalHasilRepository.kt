@@ -9,16 +9,16 @@ import com.bareksa.bareksatest.ui.grafik.GrafikFragment
 
 class ImbalHasilRepository(private val remoteDataSource: ImbalHasilRemoteDataSource) :
     GrafikDataProvider {
-    suspend fun getSinceLastYear(): RepositoryResource<List<ImbalHasil>> {
-        return when (val res = remoteDataSource.getSince(1, TimeUnit.Year)) {
+    suspend fun getSinceLastYear(id: String): RepositoryResource<List<ImbalHasil>> {
+        return when (val res = remoteDataSource.getImbalHasilByIdSince(id, 1, TimeUnit.Year)) {
             is RemoteResource.Success -> RepositoryResource.Success(res.data)
             is RemoteResource.Failed -> RepositoryResource.Error(res.message)
             is RemoteResource.Error -> RepositoryResource.Error(res.message, res.cause)
         }
     }
 
-    override suspend fun getGrafikDataSinceLastYear(): RepositoryResource<List<GrafikFragment.GrafikEntry>> {
-        return when (val res = getSinceLastYear()) {
+    override suspend fun getGrafikDataSinceLastYear(id: String): RepositoryResource<List<GrafikFragment.GrafikEntry>> {
+        return when (val res = getSinceLastYear(id)) {
             is RepositoryResource.Error -> res
             is RepositoryResource.Success -> RepositoryResource.Success(res.data.map {
                 GrafikFragment.GrafikEntry(

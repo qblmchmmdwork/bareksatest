@@ -5,5 +5,5 @@ import com.bareksa.bareksatest.model.TimeUnit
 
 interface ImbalHasilRemoteDataSource {
 
-    suspend fun getSince(value: Int, unit: TimeUnit): RemoteResource<List<ImbalHasil>>
+    suspend fun getImbalHasilByIdSince(id: String, since: Int, sinceTimeUnit: TimeUnit): RemoteResource<List<ImbalHasil>>
 }
